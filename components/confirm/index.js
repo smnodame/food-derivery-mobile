@@ -45,7 +45,7 @@ export default class Confirm extends Component<{}> {
                     <ListItem itemDivider>
                         <Text>รายละเอียด ผู้ชื้อ</Text>
                     </ListItem>
-                    <ListItem icon>
+                    <ListItem icon onPress={() => this.props.navigation.navigate('Map') }>
                         <Left>
                             <Icon name="ios-pin-outline" />
                         </Left>

@@ -9,8 +9,8 @@ import MapView from 'react-native-maps'
 
 const { width, height } = Dimensions.get('window')
 const ASPECT_RATIO = width / height
-const LATITUDE = 16.7425568485
-const LONGITUDE = 100.1936249604
+const LATITUDE = 13.74091
+const LONGITUDE = 100.58973
 const LATITUDE_DELTA = 0.0922
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO
 
@@ -95,7 +95,7 @@ export default class Map extends Component<{}> {
                   </Button>
               </Left>
               <Body>
-                  <Title>Order</Title>
+                  <Title>Map</Title>
               </Body>
               <Right>
               </Right>
@@ -150,5 +150,9 @@ const styles = StyleSheet.create({
         bottom: 0,
         left: 0,
         right: 0,
-    }
+    },
+    statusBar: {
+        backgroundColor: "#000",
+        height: Expo.Constants.statusBarHeight,
+    },
 })

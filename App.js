@@ -14,6 +14,7 @@ import SeacthResult from './components/searchResult'
 import Detail from './components/detail'
 import Basket from './components/basket'
 import Confirm from './components/confirm'
+import Map from './components/chooseMap'
 
 class App extends React.Component {
     constructor(props) {
@@ -99,7 +100,8 @@ export default StackNavigator({
     SeacthResult: { screen: SeacthResult },
     Detail: { screen: Detail },
     Basket: { screen: Basket },
-    Confirm: { screen: Confirm }
+    Confirm: { screen: Confirm },
+    Map: { screen: Map }
 },
 {
     initialRouteName: "Home",
