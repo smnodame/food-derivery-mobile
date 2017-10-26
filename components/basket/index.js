@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View,  StyleSheet, Image, TextInput, Platform, TouchableOpacity, KeyboardAvoidingView, FlatList} from 'react-native';
-import { Container, Header, Content, List, ListItem, Text, Tab, Tabs, TabHeading, Icon, Button, Separator, Right, Body, Left, Title, Card, CardItem } from 'native-base';
+import { Container, Header, Content, List, ListItem, Text, Tab, Tabs, TabHeading, Icon, Button, Separator, Right, Body, Left, Title, Card, CardItem, Input } from 'native-base';
 import { Row, Column as Col} from 'react-native-responsive-grid'
 import faker from 'faker'
 import Expo from "expo";
@@ -128,6 +128,27 @@ export default class Basket extends Component<{}> {
                   </Card>
                   <Card style={styles.orderItem}>
                     <CardItem>
+
+                      <TextInput
+                      style={{ width: '100%'}}
+                       multiline = {true}
+                              editable = {true}
+                              maxLength = {40}
+                              placeholder="รายละเอียดเพิ่มเติม"
+                            />
+                    </CardItem>
+                 </Card>
+                 <Card style={styles.orderItem}>
+                   <CardItem>
+
+                   <Button iconLeft transparent warning>
+                               <Icon name='beer' />
+                               <Text>Pub</Text>
+                             </Button>
+                   </CardItem>
+                </Card>
+                  <Card style={styles.orderItem}>
+                    <CardItem>
                       <Body>
                           <Text style={styles.fontRobo}>
                               Subtotal:
@@ -158,9 +179,9 @@ export default class Basket extends Component<{}> {
                       </Right>
                     </CardItem>
                  </Card>
-                  <Button style={styles.buttonContinue}>
-                       <Text style={styles.textContinue}>Continue</Text>
-                  </Button>
+                 <Button block success>
+                    <Text>Continue</Text>
+                 </Button>
               </Content>
               :
               <Content>
@@ -190,7 +211,6 @@ const styles = StyleSheet.create({
         color: '#FF7043'
     },
     orderItem: {
-        borderRadius: 10,
         padding: 10,
         borderColor: '#d3d3d3',
         borderWidth: 1
