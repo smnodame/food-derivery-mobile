@@ -138,15 +138,6 @@ export default class Basket extends Component<{}> {
                             />
                     </CardItem>
                  </Card>
-                 <Card style={styles.orderItem}>
-                   <CardItem>
-
-                   <Button iconLeft transparent warning>
-                               <Icon name='beer' />
-                               <Text>Pub</Text>
-                             </Button>
-                   </CardItem>
-                </Card>
                   <Card style={styles.orderItem}>
                     <CardItem>
                       <Body>
@@ -179,7 +170,7 @@ export default class Basket extends Component<{}> {
                       </Right>
                     </CardItem>
                  </Card>
-                 <Button block success>
+                 <Button block info onPress={() => this.props.navigation.navigate('Confirm')} style={{ marginBottom: 20 }}>
                     <Text>Continue</Text>
                  </Button>
               </Content>

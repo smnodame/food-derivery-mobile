@@ -13,6 +13,7 @@ import Info from './components/info'
 import SeacthResult from './components/searchResult'
 import Detail from './components/detail'
 import Basket from './components/basket'
+import Confirm from './components/confirm'
 
 class App extends React.Component {
     constructor(props) {
@@ -97,7 +98,8 @@ export default StackNavigator({
     Home: { screen: App },
     SeacthResult: { screen: SeacthResult },
     Detail: { screen: Detail },
-    Basket: { screen: Basket }
+    Basket: { screen: Basket },
+    Confirm: { screen: Confirm }
 },
 {
     initialRouteName: "Home",
