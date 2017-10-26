@@ -15,9 +15,18 @@ export default class Info extends React.Component {
 
   render() {
     return (
-        <Content>
-
-        </Content>
+        <View style={{
+            flex: 1,
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+        }}>
+            <Text style={{ fontSize: 25, fontWeight: 'bold' }}>Your Profile</Text>
+            <Text style={{ textAlign: 'center', marginTop: 10 }}>Before order, please sing in or create an account.</Text>
+            <View style={{ marginTop: 10 }}>
+                <Button info><Text> Log in or Create an account</Text></Button>
+            </View>
+        </View>
     )
   }
 }
