@@ -78,7 +78,7 @@ class App extends React.Component {
                         <Text  numberOfLines={1}>Home</Text>
                     </Button>
                     <Button vertical onPress={() => this.selectTab('history')}>
-                        <Icon name="camera" />
+                        <Icon name="ios-time-outline" />
                         <Text  numberOfLines={1}>History</Text>
                     </Button>
                     <Button vertical onPress={() => this.selectTab('info')}>

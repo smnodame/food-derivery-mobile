@@ -27,16 +27,28 @@ export default class Basket extends Component<{}> {
                Platform.OS != 'ios'&&<View style={styles.statusBar} />
           }
           <Header>
-              <Left>
-                  <Button transparent onPress={() => this.props.navigation.dispatch(NavigationActions.back()) } >
-                      <Icon name='ios-arrow-back' style={{ color: "black"}} />
-                  </Button>
-              </Left>
-              <Body>
-                  <Title>Order</Title>
-              </Body>
-              <Right>
-              </Right>
+            <Left>
+                <Button transparent onPress={() => this.props.navigation.dispatch(NavigationActions.back()) }  >
+                        {
+							Platform.OS != 'ios'&&<Icon name="md-arrow-round-back" style={{ color: "white"}} />
+						}
+                        {
+                            Platform.OS == 'ios'&&<Icon name='ios-arrow-back' style={{ color: "black"}} />
+                        }
+
+                </Button>
+            </Left>
+            <Body>
+                <Title>Order</Title>
+            </Body>
+            <Right>
+                {
+                    Platform.OS != 'ios'&&<Text style={{ color: 'white'  }} onPress={() => this.props.navigation.navigate('Confirm')}>Next</Text>
+                }
+                {
+                    Platform.OS == 'ios'&&<Text style={{ color: 'black'  }} onPress={() => this.props.navigation.navigate('Confirm')}>Next</Text>
+                }
+            </Right>
           </Header>
           {
               this.state.isReady?
@@ -170,9 +182,6 @@ export default class Basket extends Component<{}> {
                       </Right>
                     </CardItem>
                  </Card>
-                 <Button block info onPress={() => this.props.navigation.navigate('Confirm')} style={{ marginBottom: 20 }}>
-                    <Text>Continue</Text>
-                 </Button>
               </Content>
               :
               <Content>

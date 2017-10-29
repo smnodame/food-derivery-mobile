@@ -79,7 +79,12 @@ export default class Detail extends Component<{}> {
             <Header>
                 <Left>
                     <Button transparent  onPress={() => this.props.navigation.dispatch(NavigationActions.back()) } >
-                        <Icon name='ios-arrow-back' style={{ color: "black"}}/>
+                        {
+                            Platform.OS != 'ios'&&<Icon name="md-arrow-round-back" style={{ color: "white"}} />
+                        }
+                        {
+                            Platform.OS == 'ios'&&<Icon name='ios-arrow-back' style={{ color: "black"}} />
+                        }
                     </Button>
                 </Left>
                 <Body>
@@ -87,7 +92,12 @@ export default class Detail extends Component<{}> {
                 </Body>
                 <Right>
                     <Button transparent  onPress={() => this.props.navigation.navigate('Basket') } >
-                        <Icon name='ios-cart-outline' style={{ color: "black"}}/>
+                        {
+                            Platform.OS != 'ios'&&<Icon name="md-cart" style={{ color: "white"}} />
+                        }
+                        {
+                            Platform.OS == 'ios'&&<Icon name='ios-cart-outline' style={{ color: "black"}}/>
+                        }
                     </Button>
                 </Right>
             </Header>

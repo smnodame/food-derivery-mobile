@@ -29,13 +29,24 @@ export default class Confirm extends Component<{}> {
           <Header>
               <Left>
                   <Button transparent onPress={() => this.props.navigation.dispatch(NavigationActions.back()) } >
-                      <Icon name='ios-arrow-back' style={{ color: "black"}} />
+                      {
+                          Platform.OS != 'ios'&&<Icon name="md-arrow-round-back" style={{ color: "white"}} />
+                      }
+                      {
+                          Platform.OS == 'ios'&&<Icon name='ios-arrow-back' style={{ color: "black"}} />
+                      }
                   </Button>
               </Left>
               <Body>
                   <Title>Order</Title>
               </Body>
               <Right>
+                  {
+                      Platform.OS != 'ios'&&<Text style={{ color: 'white' }}>Order</Text>
+                  }
+                  {
+                      Platform.OS == 'ios'&&<Text style={{ color: 'black' }}>Order</Text>
+                  }
               </Right>
           </Header>
           {
@@ -141,9 +152,6 @@ export default class Confirm extends Component<{}> {
                         </Right>
                     </ListItem>
                 </List>
-                <Button block info>
-                   <Text>Confirm Order</Text>
-                </Button>
               </Content>
               :
               <Content>
