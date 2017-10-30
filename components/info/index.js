@@ -4,7 +4,7 @@ import { Container, Header, Content, List, ListItem, Title, Text, Tab, Tabs, Seg
 import { Row, Column as Col} from 'react-native-responsive-grid'
 import faker from 'faker'
 import ImageSlider from 'react-native-image-slider';
-import Expo from "expo";
+import { AuthSession } from 'expo';
 
 export default class Info extends React.Component {
     constructor(props) {
@@ -12,6 +12,19 @@ export default class Info extends React.Component {
         this.state = {
             logged: false
         }
+    }
+
+    _handlePressAsync = async () => {
+        console.log('==================')
+
+        const result = await AuthSession.startAsync({
+              authUrl:
+                'https://smnodame.auth0.com/authorize?'+
+                'scope=openid%20name%20picture&'+
+                'response_type=token&'+
+                'client_id=ynsH1st6PtA5Ey3DBty58CKJm9RMe6Wp&'+
+                'redirect_uri=https://auth.expo.io/@anonymous/food-delivery-8ed01021-85f4-4a3d-9870-ee4bae97f0fa'
+            })
     }
 
   render() {
@@ -76,7 +89,7 @@ export default class Info extends React.Component {
             <Text style={{ fontSize: 25, fontWeight: 'bold' }}>Your Profile</Text>
             <Text style={{ textAlign: 'center', marginTop: 10, marginLeft: 20, marginRight: 20 }}>Before order, please sing in or create an account.</Text>
             <View style={{ marginTop: 10 }}>
-                <Button info onPress={() => this.setState({ logged: true })}><Text> Log in or Create an account</Text></Button>
+                <Button info onPress={() => this._handlePressAsync()}><Text> Log in or Create an account</Text></Button>
             </View>
         </View>
     )

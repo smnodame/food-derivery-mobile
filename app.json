@@ -3,7 +3,7 @@
         "name": "smnodame",
         "icon": "./facebook-icon.png",
         "version": "1.0.0",
-        "slug": "your-app-slug",
+        "slug": "food-delivery",
         "sdkVersion": "21.0.0",
         "ios": {
             "bundleIdentifier": "com.smnodame.test"
