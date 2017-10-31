@@ -16,6 +16,7 @@ import Basket from './components/basket'
 import Confirm from './components/confirm'
 import Map from './components/chooseMap'
 import Search from './components/search'
+import PlaceAutoComplete from './components/placeAutoComplete'
 
 class App extends React.Component {
     constructor(props) {
@@ -103,7 +104,8 @@ export default StackNavigator({
     Basket: { screen: Basket },
     Confirm: { screen: Confirm },
     Map: { screen: Map },
-    Search: { screen: Search }
+    Search: { screen: Search },
+    PlaceAutoComplete: { screen: PlaceAutoComplete }
 },
 {
     initialRouteName: "Home",

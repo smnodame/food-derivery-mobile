@@ -263,8 +263,8 @@ const styles = StyleSheet.create({
     },
     hour: {
         fontFamily: "Roboto",
-        paddingTop: 8,
-        paddingBottom: 8,
+        paddingTop: 2,
+        paddingBottom: 10,
         borderColor: '#d3d3d3',
         borderBottomWidth: 0.5,
         borderTopWidth: 0.5,

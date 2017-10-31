@@ -98,6 +98,14 @@ export default class Map extends Component<{}> {
                   <Title>Map</Title>
               </Body>
               <Right>
+                  <Button transparent onPress={() =>  this.props.navigation.navigate('PlaceAutoComplete')} >
+                      {
+                          Platform.OS != 'ios'&&<Icon name="search" style={{ color: "white"}} />
+                      }
+                      {
+                          Platform.OS == 'ios'&&<Icon name='search' style={{ color: "black"}}/>
+                      }
+                  </Button>
               </Right>
           </Header>
           {
