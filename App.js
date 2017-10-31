@@ -15,6 +15,7 @@ import Detail from './components/detail'
 import Basket from './components/basket'
 import Confirm from './components/confirm'
 import Map from './components/chooseMap'
+import Search from './components/search'
 
 class App extends React.Component {
     constructor(props) {
@@ -101,7 +102,8 @@ export default StackNavigator({
     Detail: { screen: Detail },
     Basket: { screen: Basket },
     Confirm: { screen: Confirm },
-    Map: { screen: Map }
+    Map: { screen: Map },
+    Search: { screen: Search }
 },
 {
     initialRouteName: "Home",

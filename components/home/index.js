@@ -118,7 +118,7 @@ export default class Home extends React.Component {
                 'https://img01.siam2nite.com/XxoZa5z3cN6JYtN_SCYlcZkhly8=/smart/locations/1081/cover_large_p19op819ru38p18pe1dat1jq71smk8.jpg'
             ]}/>
 
-            <Button bordered block style={{ backgroundColor: 'white', margin: 10, borderColor: '#d3d3d3', borderBottomWidth: 0.5 }} onPress={() => this.props.screenProps.rootNavigation.navigate('SeacthResult')}>
+            <Button bordered block style={{ backgroundColor: 'white', margin: 10, borderColor: '#d3d3d3', borderBottomWidth: 0.5 }} onPress={() => this.props.screenProps.rootNavigation.navigate('Search')}>
                 <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
                     <Icon style={{color: '#4c4c4c'}} name='ios-restaurant-outline' />
                     <Text style={{color: '#4c4c4c' }}>ค้นหาร้านอาหาร</Text>

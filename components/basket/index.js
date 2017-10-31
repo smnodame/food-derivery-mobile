@@ -195,6 +195,7 @@ export default class Basket extends Component<{}> {
 const styles = StyleSheet.create({
     content: {
         padding: 10,
+        marginBottom: 15,
         backgroundColor: '#f4f4f4'
     },
     fontRobo: {

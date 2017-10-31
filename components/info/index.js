@@ -1,30 +1,36 @@
 import React, { Component } from 'react';
 import { View,  StyleSheet, Image, TextInput, TouchableOpacity, KeyboardAvoidingView, FlatList} from 'react-native';
-import { Container, Header, Content, List, ListItem, Title, Text, Tab, Tabs, Segment, Badge, TabHeading, Icon, Button, Separator, Right, Body, Left, Card, CardItem, Thumbnail, FooterTab, Footer } from 'native-base';
+import { Container, Header, Content, List, ListItem, Title, Text, Input, Tab, Item, Label, Tabs, Segment, Badge, TabHeading, Icon, Button, Separator, Right, Body, Left, Card, CardItem, Thumbnail, FooterTab, Footer } from 'native-base';
 import { Row, Column as Col} from 'react-native-responsive-grid'
 import faker from 'faker'
 import ImageSlider from 'react-native-image-slider';
-import { AuthSession } from 'expo';
+import { AuthSession, Facebook } from 'expo';
 
 export default class Info extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            logged: false
+            logged: false,
+            info: null
         }
     }
 
     _handlePressAsync = async () => {
-        console.log('==================')
-
-        const result = await AuthSession.startAsync({
-              authUrl:
-                'https://smnodame.auth0.com/authorize?'+
-                'scope=openid%20name%20picture&'+
-                'response_type=token&'+
-                'client_id=ynsH1st6PtA5Ey3DBty58CKJm9RMe6Wp&'+
-                'redirect_uri=https://auth.expo.io/@anonymous/food-delivery-8ed01021-85f4-4a3d-9870-ee4bae97f0fa'
+        const { type, token } = await Expo.Facebook.logInWithReadPermissionsAsync('1406405586148086', {
+            permissions: ['public_profile'],
+        });
+        if (type === 'success') {
+            const response = await fetch(`https://graph.facebook.com/me?access_token=${token}`);
+            const info = await response.json()
+            imageURL = "http://graph.facebook.com/" + info.id + "/picture?type=large"
+            this.setState({
+                info: {
+                    picture: imageURL,
+                    name: info.name
+                },
+                logged: true
             })
+        }
     }
 
   render() {
@@ -33,8 +39,8 @@ export default class Info extends React.Component {
         <Container >
             <Content style={{ backgroundColor: 'white'}}>
                 <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center', padding: 15 }}>
-                    <Image source={{ uri: 'http://www.chingcancook.com/head_photo/02_20150122172551GLWY.jpg' }} style={{ width: 120, height: 120, borderRadius: 60}}/>
-                    <Text style={{ marginTop: 10, fontSize: 20 }}>สมชาย ใจดี</Text>
+                    <Image source={{ uri: this.state.info.picture }} style={{ width: 120, height: 120, borderRadius: 60}}/>
+                    <Text style={{ marginTop: 10, fontSize: 20 }}>{ this.state.info.name }</Text>
                 </View>
                 <List>
                     <ListItem itemDivider>
@@ -45,7 +51,7 @@ export default class Info extends React.Component {
                             <Text>ชื่อ</Text>
                         </Left>
                         <Body>
-                            <Text>สมชาย ใจดี</Text>
+                            <Text>{ this.state.info.name }</Text>
                         </Body>
                     </ListItem>
                     <ListItem >
@@ -53,7 +59,12 @@ export default class Info extends React.Component {
                             <Text>อีเมล์</Text>
                         </Left>
                         <Body>
-                            <Text>testuser@mail.com</Text>
+                        <TextInput
+                                style={{ width: '100%'}}
+                                editable = {true}
+                                maxLength = {40}
+                                placeholder="กรุณาเพิ่มอีเมล์"
+                              />
                         </Body>
                     </ListItem>
                     <ListItem >
@@ -61,7 +72,12 @@ export default class Info extends React.Component {
                             <Text>เบอร์ติดต่อ</Text>
                         </Left>
                         <Body>
-                            <Text>0812345678</Text>
+                            <TextInput
+                                    style={{ width: '100%'}}
+                                    editable = {true}
+                                    maxLength = {40}
+                                    placeholder="กรุณาเพิ่มเบอร์ติดต่อ"
+                                  />
                         </Body>
                     </ListItem>
                     <ListItem>
@@ -69,7 +85,12 @@ export default class Info extends React.Component {
                             <Text>ที่อยู่</Text>
                         </Left>
                         <Body>
-                            <Text>พิษณุโลก</Text>
+                            <TextInput
+                                    style={{ width: '100%'}}
+                                    editable = {true}
+                                    maxLength = {40}
+                                    placeholder="กรุณาเพิ่มที่อยู่ปัจจุบัน"
+                                  />
                         </Body>
                     </ListItem>
 
