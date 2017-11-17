@@ -6,47 +6,53 @@ import faker from 'faker'
 import Expo from "expo";
 import { NavigationActions } from 'react-navigation'
 
+// [
+//     {
+//         key : 1,
+//         title: 'เย็นตาโฟเครื่องทรง (ร้านต้นตำรับจากฮ่องกง)',
+//         description: 'บะหมี่ทำเองต้นตำรับฉบับฮ่องกง พร้อมน้ำซุปรสเด็ดส่งตรงถึงบ้าน',
+//         address: '161/6 Soi Thonglor 9 Sukhumvit Road Bangkok',
+//         shopType: 'บะหมี่, อาหารญี่ปุ่น',
+//         notation: 'ร้านอาหารเเนะนำ',
+//         uri: 'http://www.chingcancook.com/head_photo/02_20150122172551GLWY.jpg'
+//     },
+//     {
+//         key : 2,
+//         title: 'เย็นตาโฟเครื่องทรง (ร้านต้นตำรับจากฮ่องกง)',
+//         address: '161/6 Soi Thonglor 9 Sukhumvit Road Bangkok',
+//         shopType: 'บะหมี่, อาหารญี่ปุ่น',
+//         uri: 'http://www.chingcancook.com/head_photo/02_20150122172551GLWY.jpg'
+//     },
+//     {
+//         key : 3,
+//         title: 'เย็นตาโฟเครื่องทรง (ร้านต้นตำรับจากฮ่องกง)',
+//         address: '161/6 Soi Thonglor 9 Sukhumvit Road Bangkok',
+//         shopType: 'บะหมี่, อาหารญี่ปุ่น',
+//         notation: 'ร้านอาหารเเนะนำ',
+//         uri: 'http://www.chingcancook.com/head_photo/02_20150122172551GLWY.jpg'
+//     },
+//     {
+//         key : 4,
+//         title: 'เย็นตาโฟเครื่องทรง (ร้านต้นตำรับจากฮ่องกง)',
+//         description: 'บะหมี่ทำเองต้นตำรับฉบับฮ่องกง พร้อมน้ำซุปรสเด็ดส่งตรงถึงบ้าน',
+//         address: '161/6 Soi Thonglor 9 Sukhumvit Road Bangkok',
+//         shopType: 'บะหมี่, อาหารญี่ปุ่น',
+//         uri: 'http://www.chingcancook.com/head_photo/02_20150122172551GLWY.jpg'
+//     }
+// ]
+
 export default class SearchResult extends Component<{}> {
     constructor(props) {
         super(props)
         this.state = {
             isReady: false,
-            searchResult: [
-                {
-                    key : 1,
-                    title: 'เย็นตาโฟเครื่องทรง (ร้านต้นตำรับจากฮ่องกง)',
-                    description: 'บะหมี่ทำเองต้นตำรับฉบับฮ่องกง พร้อมน้ำซุปรสเด็ดส่งตรงถึงบ้าน',
-                    address: '161/6 Soi Thonglor 9 Sukhumvit Road Bangkok',
-                    shopType: 'บะหมี่, อาหารญี่ปุ่น',
-                    notation: 'ร้านอาหารเเนะนำ',
-                    uri: 'http://www.chingcancook.com/head_photo/02_20150122172551GLWY.jpg'
-                },
-                {
-                    key : 2,
-                    title: 'เย็นตาโฟเครื่องทรง (ร้านต้นตำรับจากฮ่องกง)',
-                    address: '161/6 Soi Thonglor 9 Sukhumvit Road Bangkok',
-                    shopType: 'บะหมี่, อาหารญี่ปุ่น',
-                    uri: 'http://www.chingcancook.com/head_photo/02_20150122172551GLWY.jpg'
-                },
-                {
-                    key : 3,
-                    title: 'เย็นตาโฟเครื่องทรง (ร้านต้นตำรับจากฮ่องกง)',
-                    address: '161/6 Soi Thonglor 9 Sukhumvit Road Bangkok',
-                    shopType: 'บะหมี่, อาหารญี่ปุ่น',
-                    notation: 'ร้านอาหารเเนะนำ',
-                    uri: 'http://www.chingcancook.com/head_photo/02_20150122172551GLWY.jpg'
-                },
-                {
-                    key : 4,
-                    title: 'เย็นตาโฟเครื่องทรง (ร้านต้นตำรับจากฮ่องกง)',
-                    description: 'บะหมี่ทำเองต้นตำรับฉบับฮ่องกง พร้อมน้ำซุปรสเด็ดส่งตรงถึงบ้าน',
-                    address: '161/6 Soi Thonglor 9 Sukhumvit Road Bangkok',
-                    shopType: 'บะหมี่, อาหารญี่ปุ่น',
-                    uri: 'http://www.chingcancook.com/head_photo/02_20150122172551GLWY.jpg'
-                }
-            ]
+            searchResult: this.props.navigation.state.params.shops,
+            title: this.props.navigation.state.params.search_by
         }
         this.renderSearchResult = this.renderSearchResult.bind(this)
+        console.log(this.props.navigation.state.params.shops)
+        console.log(this.props.navigation.state.params.search_by)
+        this.renderMenuTypeTopShop = this.renderMenuTypeTopShop.bind(this)
     }
 
     async componentWillMount() {
@@ -55,26 +61,48 @@ export default class SearchResult extends Component<{}> {
             Roboto_medium: require("native-base/Fonts/Roboto_medium.ttf"),
             Ionicons: require("@expo/vector-icons/fonts/Ionicons.ttf")
         })
+        const response = await fetch('http://192.168.1.38/food_delivery/admin/menu')
+        const data = await response.json()
+        this.setState({
+            shopType: data.map((menu) => ({
+                key: menu.id,
+                name: {
+                    th: menu.name_th,
+                    en: menu.name_en
+                },
+                uri: menu.url
+            }))
+        })
         this.setState({ isReady: true })
     }
 
+    renderMenuTypeTopShop(menu_type) {
+        return menu_type.reduce((a, b) => {
+            const filter = (item) => {
+                return item.key == b
+            }
+            return a + this.state.shopType.find(filter).name.th + ", "
+        }, "")
+    }
+
     renderSearchResult() {
-        const template = this.state.searchResult.map((searchResult) => (
-            <ListItem key={ searchResult.key }>
+        const template = this.state.searchResult.map((searchResult) => {
+            console.log(searchResult)
+            return (<ListItem key={ searchResult.id }>
                 <TouchableOpacity  onPress={() => this.props.navigation.navigate('Detail') } style={{ flex: 1, flexDirection: 'row'}}>
-                    <Image style={{ width: 100, height: 100 }} source={{ uri: searchResult.uri }} />
+                    <Image style={{ width: 100, height: 100 }} source={{ uri: searchResult.detail.url_img_profile }} />
                     <Body>
                         {
-                            searchResult.title&&<Text style={styles.title} numberOfLines={1}>{ searchResult.title }</Text>
+                            searchResult.detail.title&&<Text style={styles.title} numberOfLines={1}>{ searchResult.detail.title }</Text>
                         }
                         {
-                            searchResult.description&&<Text style={styles.description} numberOfLines={2}>{ searchResult.description }</Text>
+                            searchResult.detail.detail!=""&&<Text style={styles.description} numberOfLines={2}>{ searchResult.detail.detail }</Text>
                         }
                         {
-                            searchResult.address&&<Text style={styles.address} numberOfLines={2}>{ searchResult.address }</Text>
+                            searchResult.detail.address!=""&&<Text style={styles.address} numberOfLines={2}>{ searchResult.detail.address }</Text>
                         }
                         {
-                            searchResult.shopType&&<Text style={styles.category}>{ searchResult.shopType }</Text>
+                            searchResult.detail.menu_type.length>=1&&<Text style={styles.category}>{ this.renderMenuTypeTopShop( searchResult.detail.menu_type) }</Text>
                         }
                         {
                             searchResult.notation&&(
@@ -86,7 +114,7 @@ export default class SearchResult extends Component<{}> {
                     </Body>
                 </ TouchableOpacity>
             </ListItem>
-        ))
+        )})
         return template
     }
 
@@ -108,7 +136,7 @@ export default class SearchResult extends Component<{}> {
                     </Button>
                 </Left>
                 <Body>
-                    <Title>HOT DEALS</Title>
+                    <Title>{ this.state.title }</Title>
                 </Body>
                 <Right>
                     <Button transparent onPress={() => this.props.navigation.navigate('Basket') } >

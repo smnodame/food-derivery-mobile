@@ -51,6 +51,23 @@ export default class Home extends React.Component {
         this.renderCategory = this.renderCategory.bind(this)
         this.renderShopType = this.renderShopType.bind(this)
         this.renderMenuTypeTopShop = this.renderMenuTypeTopShop.bind(this)
+        this.searchFromMenu = this.searchFromMenu.bind(this)
+    }
+
+    searchFromMenu(id, name) {
+        //
+        fetch('http://192.168.1.38/food_delivery/admin/search?id='+id)
+        .then((res) => res.json())
+        .then((data) => {
+            const shops = data.map((item) => ({
+                id: item.id,
+                detail: JSON.parse(item.detail)
+            }))
+            this.props.screenProps.rootNavigation.navigate('SeacthResult', {
+                search_by: name,
+                shops
+            })
+        })
     }
 
     componentWillMount() {
@@ -106,7 +123,7 @@ export default class Home extends React.Component {
     renderCategory() {
         const template = this.state.category.map((category) => (
             <Col size={50} style={{ padding: 10}} key={ category.key }>
-                <Button bordered block iconLeft style={{ borderColor: '#d3d3d3', borderBottomWidth: 0.5, backgroundColor: 'white' }} onPress={() => this.props.screenProps.rootNavigation.navigate('SeacthResult')}>
+                <Button bordered block iconLeft style={{ borderColor: '#d3d3d3', borderBottomWidth: 0.5, backgroundColor: 'white' }} onPress={() => this.searchFromMenu(category.key, category.name)}>
                         <Text numberOfLines={1} style={{color: '#4c4c4c'}}>{ category.name }</Text>
                 </Button>
             </Col>
@@ -130,7 +147,7 @@ export default class Home extends React.Component {
     }
 
     renderMenuTypeTopShop(shop_id) {
-        return this.state.shops[shop_id].food_type.reduce((a, b) => {
+        return this.state.shops[shop_id].menu_type.reduce((a, b) => {
             const filter = (item) => {
                 return item.key == b
             }
