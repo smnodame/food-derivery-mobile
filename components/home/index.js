@@ -31,39 +31,6 @@ const randomUsers = (count = 10) => {
   return arr
 }
 
-// {
-//     key: 1,
-//     name: {
-//         th: 'ก๋วยเตี๋ยว',
-//         en: 'NOODLE'
-//     },
-//     uri: 'http://www.chingcancook.com/head_photo/02_20150122172551GLWY.jpg'
-// },
-// {
-//     key: 2,
-//     name:  {
-//         th: 'ซูซิ',
-//         en: 'SHUSI'
-//     },
-//     uri: 'http://www.kruamoomoo.com/wp-content/uploads/2012/11/pork-t-bone-steak-and-salad-039.jpg'
-// },
-// {
-//     key: 3,
-//     name: {
-//         th: 'สเต็ก',
-//         en: 'STECK'
-//     },
-//     uri: 'https://s.isanook.com/mn/0/rp/r/w700h420/ya0xa0m1w0/aHR0cHM6Ly9zLmlzYW5vb2suY29tL21uLzAvdWQvMzIvMTYzOTEyL3N0ZWFrc21hbGwuanBn.jpg'
-// },
-// {
-//     key: 4,
-//     name: {
-//         th: 'ข้าว',
-//         en: 'RICE'
-//     },
-//     uri: 'http://ipattaya.co/wp-content/uploads/2016/12/DSC08017.jpg'
-// }
-
 export default class Home extends React.Component {
     constructor(props) {
         super(props)
@@ -77,13 +44,49 @@ export default class Home extends React.Component {
                 { name: 'LOW BUDGET', key: 5 },
                 { name: 'LONG LINE', key: 6 },
             ],
-            shopType: []
+            shopType: [],
+            shops: {},
+            top_shops: []
         }
         this.renderCategory = this.renderCategory.bind(this)
         this.renderShopType = this.renderShopType.bind(this)
+        this.renderMenuTypeTopShop = this.renderMenuTypeTopShop.bind(this)
     }
 
     componentWillMount() {
+        fetch('http://192.168.1.38/food_delivery/admin/category')
+        .then((res) => res.json())
+        .then((data) =>
+            this.setState({
+                category: data.map((category) => ({
+                    key: category.id,
+                    name: category.name
+                }))
+            })
+        )
+
+        fetch('http://192.168.1.38/food_delivery/admin/shop')
+        .then((res) => res.json())
+        .then((data) => {
+            var tem_shops = data.reduce(function(a, b) {
+                return Object.assign(a, {
+                    [b.id]: JSON.parse(b.detail)
+                })
+            }, {})
+
+            this.setState({
+                shops: tem_shops
+            })
+        })
+
+        fetch('http://192.168.1.38/food_delivery/admin/top_shop')
+        .then((res) => res.json())
+        .then((data) => {
+            this.setState({
+                top_shops: data
+            })
+        })
+
         fetch('http://192.168.1.38/food_delivery/admin/menu')
         .then((res) => res.json())
         .then((data) =>
@@ -95,17 +98,6 @@ export default class Home extends React.Component {
                         en: menu.name_en
                     },
                     uri: menu.url
-                }))
-            })
-        )
-
-        fetch('http://192.168.1.38/food_delivery/admin/category')
-        .then((res) => res.json())
-        .then((data) =>
-            this.setState({
-                category: data.map((category) => ({
-                    key: category.id,
-                    name: category.name
                 }))
             })
         )
@@ -137,6 +129,15 @@ export default class Home extends React.Component {
         return template
     }
 
+    renderMenuTypeTopShop(shop_id) {
+        return this.state.shops[shop_id].food_type.reduce((a, b) => {
+            const filter = (item) => {
+                return item.key == b
+            }
+            return a + this.state.shopType.find(filter).name.th + ", "
+        }, "")
+    }
+
     render() {
     return (
         <Content>
@@ -155,18 +156,22 @@ export default class Home extends React.Component {
             </Button>
 
             <View style={{ padding: 10, marginTop: 10, }}>
-                <Text style={{ marginLeft: 10, fontFamily: "Roboto", color: '#bdbdbd', marginBottom: 10 }}>The Best Top 10</Text>
+                <Text style={{ marginLeft: 10, fontFamily: "Roboto", color: '#bdbdbd', marginBottom: 10 }}>ร้านเเนะนำ</Text>
                 <FlatList
                     horizontal={true}
-                    data={this.state.data}
+                    data={this.state.top_shops}
                     renderItem={({item}) => (
-                        <TouchableOpacity onPress={() => this.props.screenProps.rootNavigation.navigate('Detail')}>
+                        <TouchableOpacity onPress={() => this.props.screenProps.rootNavigation.navigate('Detail')} key={item.id}>
                             <View style={{ backgroundColor: 'white', borderRadius: 5, width: 180, height: 220, borderColor: '#d3d3d3', borderWidth: 1, margin: 10 }}>
-                                <Image style={{ width: '100%', height: 120 }} source={{ uri: item.image }} />
+                                <Image style={{ width: '100%', height: 120 }} source={{ uri: this.state.shops[item.id].url_img_profile }} />
                                 <View style={{ padding: 15 }}>
-                                    <Text numberOfLines={1} style={{ color: '#4c4c4c', fontSize: 15 }}>ร้านอาหารไทยเจ้าน้อย</Text>
-                                    <Text style={styles.description} numberOfLines={2}>บะหมี่ทำเองต้นตำรับฉบับฮ่องกง พร้อมน้ำซุปรสเด็ดส่งตรงถึงบ้าน</Text>
-                                    <Text style={styles.category} numberOfLines={1}>บะหมี่, อาหารญี่ปุ่น</Text>
+                                    <Text numberOfLines={1} style={{ color: '#4c4c4c', fontSize: 15 }}>{ this.state.shops[item.id].title }</Text>
+                                    <Text style={styles.description} numberOfLines={2}>{ this.state.shops[item.id].detail }</Text>
+                                    <Text style={styles.category} numberOfLines={1}>
+                                        {
+                                            this.renderMenuTypeTopShop(item.id)
+                                        }
+                                    </Text>
                                 </View>
                             </View>
                         </TouchableOpacity>
@@ -175,7 +180,7 @@ export default class Home extends React.Component {
             </View>
 
             <View style={{ padding: 10, marginTop: 6 }}>
-                <Text style={{ marginLeft: 10, fontFamily: "Roboto", color: '#bdbdbd', marginBottom: 15 }}>Here are  8 ways to think about your next meal</Text>
+                <Text style={{ marginLeft: 10, fontFamily: "Roboto", color: '#bdbdbd', marginBottom: 15 }}>เลือกตามหมวดหมู่</Text>
                 <Row style={{ marginBottom: 15 }}>
                     {
                         this.renderCategory()
@@ -184,7 +189,7 @@ export default class Home extends React.Component {
             </View>
 
             <View style={{ padding: 20, marginTop: 6 }}>
-                <Text style={{ fontFamily: "Roboto", color: '#bdbdbd', marginBottom: 15 }}>Here are  8 ways to think about your next meal</Text>
+                <Text style={{ fontFamily: "Roboto", color: '#bdbdbd', marginBottom: 15 }}>เลือกตามประเภทอาหาร</Text>
                 {
                     this.renderShopType()
                 }
