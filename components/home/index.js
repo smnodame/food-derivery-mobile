@@ -51,12 +51,11 @@ export default class Home extends React.Component {
         this.renderCategory = this.renderCategory.bind(this)
         this.renderShopType = this.renderShopType.bind(this)
         this.renderMenuTypeTopShop = this.renderMenuTypeTopShop.bind(this)
-        this.searchFromMenu = this.searchFromMenu.bind(this)
+        this.searchShops = this.searchShops.bind(this)
     }
 
-    searchFromMenu(id, name) {
-        //
-        fetch('http://192.168.1.38/food_delivery/admin/search?id='+id)
+    searchShops(id, name, search_by) {
+        fetch('http://192.168.1.38/food_delivery/admin/search?search_by='+search_by+'&id='+id)
         .then((res) => res.json())
         .then((data) => {
             const shops = data.map((item) => ({
@@ -123,7 +122,7 @@ export default class Home extends React.Component {
     renderCategory() {
         const template = this.state.category.map((category) => (
             <Col size={50} style={{ padding: 10}} key={ category.key }>
-                <Button bordered block iconLeft style={{ borderColor: '#d3d3d3', borderBottomWidth: 0.5, backgroundColor: 'white' }} onPress={() => this.searchFromMenu(category.key, category.name)}>
+                <Button bordered block iconLeft style={{ borderColor: '#d3d3d3', borderBottomWidth: 0.5, backgroundColor: 'white' }} onPress={() => this.searchShops(category.key, category.name, 'category')}>
                         <Text numberOfLines={1} style={{color: '#4c4c4c'}}>{ category.name }</Text>
                 </Button>
             </Col>
@@ -133,7 +132,7 @@ export default class Home extends React.Component {
 
     renderShopType() {
         const template = this.state.shopType.map((shopType) => (
-            <TouchableOpacity onPress={() => this.props.screenProps.rootNavigation.navigate('SeacthResult')}  key={ shopType.key }>
+            <TouchableOpacity onPress={() => this.searchShops(shopType.key, shopType.name.th, 'type')}  key={ shopType.key }>
                 <Image style={{ width: '100%', height: 90, marginBottom: 10 }} source={{ uri: shopType.uri }}>
                     <View style={styles.overlay}/>
                     <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center' }}>
