@@ -13,7 +13,7 @@ const LATITUDE = 13.74091
 const LONGITUDE = 100.58973
 const LATITUDE_DELTA = 0.0922
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO
-
+// https://maps.googleapis.com/maps/api/directions/json?origin=13.7396191,100.5889698&destination=13.7485809,100.5832588&mode=driving
 export default class Map extends Component<{}> {
     state = {
         isReady: false,
@@ -24,53 +24,7 @@ export default class Map extends Component<{}> {
             },
             radius: 5000,
         },
-        polygon: [
-            {latitude: 13.74091, longitude: 100.58973},
-            {latitude: 13.74099, longitude: 100.58976},
-            {latitude: 13.74108, longitude: 100.58971},
-            {latitude: 13.74132, longitude: 100.58961},
-            {latitude: 13.74153, longitude: 100.5894},
-            {latitude: 13.74171, longitude: 100.58924},
-            {latitude: 13.74186, longitude: 100.58918},
-            {latitude: 13.74209, longitude: 100.58919},
-            {latitude: 13.74295, longitude: 100.58948},
-            {latitude: 13.74333, longitude: 100.5896},
-            {latitude: 13.74348, longitude: 100.58955},
-            {latitude: 13.74364, longitude: 100.58943},
-            {latitude: 13.74366, longitude: 100.58933},
-            {latitude: 13.74379, longitude: 100.58875},
-
-            {latitude: 13.74386, longitude: 100.58837},
-            {latitude: 13.74401, longitude: 100.58766},
-
-            {latitude: 13.74414, longitude: 100.58705},
-            {latitude: 13.74441, longitude: 100.58593},
-            {latitude: 13.74462, longitude: 100.58502},
-            {latitude: 13.7447, longitude: 100.58472},
-            {latitude: 13.74508, longitude: 100.58482},
-
-            {latitude: 13.74555, longitude: 100.58494},
-
-            {latitude: 13.74582, longitude: 100.58501},
-            {latitude: 13.74622, longitude: 100.58511},
-
-            {latitude: 13.74624, longitude: 100.58503},
-            {latitude: 13.74629, longitude: 100.58487},
-
-            {latitude: 13.74634, longitude: 100.58468},
-            {latitude: 13.74653, longitude: 100.58474},
-
-            {latitude: 13.74672, longitude: 100.58479},
-
-            {latitude: 13.74696, longitude: 100.584},
-            {latitude: 13.74742, longitude: 100.58241},
-
-            {latitude: 13.74758, longitude: 100.58195},
-
-            {latitude: 13.74768, longitude: 100.58162},
-
-            {latitude: 13.74804, longitude: 100.58172}
-        ]
+        polygon: []
     }
 
     async componentWillMount() {
@@ -79,8 +33,17 @@ export default class Map extends Component<{}> {
             Roboto_medium: require("native-base/Fonts/Roboto_medium.ttf"),
             Ionicons: require("@expo/vector-icons/fonts/Ionicons.ttf")
         })
+        const response = await fetch('https://maps.googleapis.com/maps/api/directions/json?origin=13.7396191,100.5889698&destination=13.7485809,100.5832588&mode=driving&key=AIzaSyBwDyJal22jgxbmZ-9TVuIxbKdsj1VBd6U')
+        const result = await response.json()
+        if (result.routes.length) {
+            this.setState({
+                polygon: this.decode(result.routes[0].overview_polyline.points) // definition below
+            });
+        }
         this.setState({ isReady: true })
     }
+
+    decode(t,e){for(var n,o,u=0,l=0,r=0,d= [],h=0,i=0,a=null,c=Math.pow(10,e||5);u<t.length;){a=null,h=0,i=0;do a=t.charCodeAt(u++)-63,i|=(31&a)<<h,h+=5;while(a>=32);n=1&i?~(i>>1):i>>1,h=i=0;do a=t.charCodeAt(u++)-63,i|=(31&a)<<h,h+=5;while(a>=32);o=1&i?~(i>>1):i>>1,l+=n,r+=o,d.push([l/c,r/c])}return d=d.map(function(t){return{latitude:t[0],longitude:t[1]}})}
 
     render() {
       return (
@@ -113,16 +76,16 @@ export default class Map extends Component<{}> {
               <View style={styles.content}>
               <MapView style={ styles.map }
                   initialRegion={{
-                      latitude: 13.74091,
-                      longitude:  100.58973,
+                      latitude: 13.7396191,
+                      longitude:  100.588969,
                       latitudeDelta: 0.0922,
-                      longitudeDelta: 0.0421,
+                      longitudeDelta: 0.0421
                   }}>
                       <MapView.Marker
-                          coordinate={{latitude: 13.74804, longitude: 100.58172}}
+                          coordinate={{latitude: 13.7396191, longitude: 100.5889698}}
                         />
                     <MapView.Marker
-                        coordinate={{latitude: 13.74091, longitude: 100.58973}}
+                        coordinate={{latitude: 13.7485809, longitude: 100.5832588}}
                       />
                       <MapView.Circle
                           center={this.state.circle.center}

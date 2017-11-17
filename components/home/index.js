@@ -31,6 +31,39 @@ const randomUsers = (count = 10) => {
   return arr
 }
 
+// {
+//     key: 1,
+//     name: {
+//         th: 'ก๋วยเตี๋ยว',
+//         en: 'NOODLE'
+//     },
+//     uri: 'http://www.chingcancook.com/head_photo/02_20150122172551GLWY.jpg'
+// },
+// {
+//     key: 2,
+//     name:  {
+//         th: 'ซูซิ',
+//         en: 'SHUSI'
+//     },
+//     uri: 'http://www.kruamoomoo.com/wp-content/uploads/2012/11/pork-t-bone-steak-and-salad-039.jpg'
+// },
+// {
+//     key: 3,
+//     name: {
+//         th: 'สเต็ก',
+//         en: 'STECK'
+//     },
+//     uri: 'https://s.isanook.com/mn/0/rp/r/w700h420/ya0xa0m1w0/aHR0cHM6Ly9zLmlzYW5vb2suY29tL21uLzAvdWQvMzIvMTYzOTEyL3N0ZWFrc21hbGwuanBn.jpg'
+// },
+// {
+//     key: 4,
+//     name: {
+//         th: 'ข้าว',
+//         en: 'RICE'
+//     },
+//     uri: 'http://ipattaya.co/wp-content/uploads/2016/12/DSC08017.jpg'
+// }
+
 export default class Home extends React.Component {
     constructor(props) {
         super(props)
@@ -44,43 +77,38 @@ export default class Home extends React.Component {
                 { name: 'LOW BUDGET', key: 5 },
                 { name: 'LONG LINE', key: 6 },
             ],
-            shopType: [
-                {
-                    key: 1,
-                    name: {
-                        th: 'ก๋วยเตี๋ยว',
-                        en: 'NOODLE'
-                    },
-                    uri: 'http://www.chingcancook.com/head_photo/02_20150122172551GLWY.jpg'
-                },
-                {
-                    key: 2,
-                    name:  {
-                        th: 'ซูซิ',
-                        en: 'SHUSI'
-                    },
-                    uri: 'http://www.kruamoomoo.com/wp-content/uploads/2012/11/pork-t-bone-steak-and-salad-039.jpg'
-                },
-                {
-                    key: 3,
-                    name: {
-                        th: 'สเต็ก',
-                        en: 'STECK'
-                    },
-                    uri: 'https://s.isanook.com/mn/0/rp/r/w700h420/ya0xa0m1w0/aHR0cHM6Ly9zLmlzYW5vb2suY29tL21uLzAvdWQvMzIvMTYzOTEyL3N0ZWFrc21hbGwuanBn.jpg'
-                },
-                {
-                    key: 4,
-                    name: {
-                        th: 'ข้าว',
-                        en: 'RICE'
-                    },
-                    uri: 'http://ipattaya.co/wp-content/uploads/2016/12/DSC08017.jpg'
-                }
-            ]
+            shopType: []
         }
         this.renderCategory = this.renderCategory.bind(this)
         this.renderShopType = this.renderShopType.bind(this)
+    }
+
+    componentWillMount() {
+        fetch('http://192.168.1.38/food_delivery/admin/menu')
+        .then((res) => res.json())
+        .then((data) =>
+            this.setState({
+                shopType: data.map((menu) => ({
+                    key: menu.id,
+                    name: {
+                        th: menu.name_th,
+                        en: menu.name_en
+                    },
+                    uri: menu.url
+                }))
+            })
+        )
+
+        fetch('http://192.168.1.38/food_delivery/admin/category')
+        .then((res) => res.json())
+        .then((data) =>
+            this.setState({
+                category: data.map((category) => ({
+                    key: category.id,
+                    name: category.name
+                }))
+            })
+        )
     }
 
     renderCategory() {
