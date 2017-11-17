@@ -87,7 +87,6 @@ export default class SearchResult extends Component<{}> {
 
     renderSearchResult() {
         const template = this.state.searchResult.map((searchResult) => {
-            console.log(searchResult)
             return (<ListItem key={ searchResult.id }>
                 <TouchableOpacity  onPress={() => this.props.navigation.navigate('Detail') } style={{ flex: 1, flexDirection: 'row'}}>
                     <Image style={{ width: 100, height: 100 }} source={{ uri: searchResult.detail.url_img_profile }} />

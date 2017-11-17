@@ -11,44 +11,14 @@ export default class Search extends Component<{}> {
         super(props)
         this.state = {
             isReady: false,
-            isShowSearchBox: false,
-            searchResult: [
-                {
-                    key : 1,
-                    title: 'เย็นตาโฟเครื่องทรง (ร้านต้นตำรับจากฮ่องกง)',
-                    description: 'บะหมี่ทำเองต้นตำรับฉบับฮ่องกง พร้อมน้ำซุปรสเด็ดส่งตรงถึงบ้าน',
-                    address: '161/6 Soi Thonglor 9 Sukhumvit Road Bangkok',
-                    shopType: 'บะหมี่, อาหารญี่ปุ่น',
-                    notation: 'ร้านอาหารเเนะนำ',
-                    uri: 'http://www.chingcancook.com/head_photo/02_20150122172551GLWY.jpg'
-                },
-                {
-                    key : 2,
-                    title: 'เย็นตาโฟเครื่องทรง (ร้านต้นตำรับจากฮ่องกง)',
-                    address: '161/6 Soi Thonglor 9 Sukhumvit Road Bangkok',
-                    shopType: 'บะหมี่, อาหารญี่ปุ่น',
-                    uri: 'http://www.chingcancook.com/head_photo/02_20150122172551GLWY.jpg'
-                },
-                {
-                    key : 3,
-                    title: 'เย็นตาโฟเครื่องทรง (ร้านต้นตำรับจากฮ่องกง)',
-                    address: '161/6 Soi Thonglor 9 Sukhumvit Road Bangkok',
-                    shopType: 'บะหมี่, อาหารญี่ปุ่น',
-                    notation: 'ร้านอาหารเเนะนำ',
-                    uri: 'http://www.chingcancook.com/head_photo/02_20150122172551GLWY.jpg'
-                },
-                {
-                    key : 4,
-                    title: 'เย็นตาโฟเครื่องทรง (ร้านต้นตำรับจากฮ่องกง)',
-                    description: 'บะหมี่ทำเองต้นตำรับฉบับฮ่องกง พร้อมน้ำซุปรสเด็ดส่งตรงถึงบ้าน',
-                    address: '161/6 Soi Thonglor 9 Sukhumvit Road Bangkok',
-                    shopType: 'บะหมี่, อาหารญี่ปุ่น',
-                    uri: 'http://www.chingcancook.com/head_photo/02_20150122172551GLWY.jpg'
-                }
-            ]
+            isShowSearchBox: true,
+            searchResult: [],
+            query: ""
         }
         this.renderSearchResult = this.renderSearchResult.bind(this)
         this.showSearchBox = this.showSearchBox.bind(this)
+        this.searchShops = this.searchShops.bind(this)
+        this.renderTypeShop = this.renderTypeShop.bind(this)
     }
 
     async componentWillMount() {
@@ -57,26 +27,62 @@ export default class Search extends Component<{}> {
             Roboto_medium: require("native-base/Fonts/Roboto_medium.ttf"),
             Ionicons: require("@expo/vector-icons/fonts/Ionicons.ttf")
         })
+        const response = await fetch('http://192.168.1.38/food_delivery/admin/menu')
+        const data = await response.json()
+        this.setState({
+            shopType: data.map((menu) => ({
+                key: menu.id,
+                name: {
+                    th: menu.name_th,
+                    en: menu.name_en
+                },
+                uri: menu.url
+            }))
+        })
         this.setState({ isReady: true })
+    }
+
+    searchShops(query) {
+        fetch('http://192.168.1.38/food_delivery/admin/search?search_by=word&query='+query)
+        .then((res) => res.json())
+        .then((data) => {
+            const shops = data.map((item) => ({
+                id: item.id,
+                detail: JSON.parse(item.detail)
+            }))
+            this.setState({
+                searchResult: shops,
+                isShowSearchBox: false
+            })
+        })
+    }
+
+    renderTypeShop(menu_type) {
+        return menu_type.reduce((a, b) => {
+            const filter = (item) => {
+                return item.key == b
+            }
+            return a + this.state.shopType.find(filter).name.th + ", "
+        }, "")
     }
 
     renderSearchResult() {
         const template = this.state.searchResult.map((searchResult) => (
-            <ListItem key={ searchResult.key }>
+            <ListItem key={ searchResult.id }>
                 <TouchableOpacity  onPress={() => this.props.navigation.navigate('Detail') } style={{ flex: 1, flexDirection: 'row'}}>
-                    <Image style={{ width: 100, height: 100 }} source={{ uri: searchResult.uri }} />
+                    <Image style={{ width: 100, height: 100 }} source={{ uri: searchResult.detail.url_img_profile }} />
                     <Body>
                         {
-                            searchResult.title&&<Text style={styles.title} numberOfLines={1}>{ searchResult.title }</Text>
+                            searchResult.detail.title&&<Text style={styles.title} numberOfLines={1}>{ searchResult.detail.title }</Text>
                         }
                         {
-                            searchResult.description&&<Text style={styles.description} numberOfLines={2}>{ searchResult.description }</Text>
+                            searchResult.detail.detail!=""&&<Text style={styles.description} numberOfLines={2}>{ searchResult.detail.detail }</Text>
                         }
                         {
-                            searchResult.address&&<Text style={styles.address} numberOfLines={2}>{ searchResult.address }</Text>
+                            searchResult.detail.address!=""&&<Text style={styles.address} numberOfLines={2}>{ searchResult.detail.address }</Text>
                         }
                         {
-                            searchResult.shopType&&<Text style={styles.category}>{ searchResult.shopType }</Text>
+                            searchResult.detail.menu_type.length>=1&&<Text style={styles.category}>{ this.renderTypeShop( searchResult.detail.menu_type) }</Text>
                         }
                         {
                             searchResult.notation&&(
@@ -118,7 +124,14 @@ export default class Search extends Component<{}> {
                 {
                     this.state.isShowSearchBox&&<Item>
                         <Icon name="ios-search" />
-                        <Input placeholder="Search" />
+                        <Input
+                            placeholder="Search"
+                            keyboardType="web-search"
+                            onSubmitEditing={() => this.searchShops(this.state.query)}
+                            ref= {(el) => { this.queryInput = el }}
+                            onChangeText={(text) => this.setState({ query: text })}
+                            value={this.state.query}
+                        />
                         <Icon name="ios-people" />
                     </Item>
                 }
