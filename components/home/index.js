@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View,  StyleSheet, Image, TextInput, TouchableOpacity, KeyboardAvoidingView, FlatList} from 'react-native';
-import { Container, Header, Content, List, ListItem, Title, Text, Tab, Tabs, Segment, Badge, TabHeading, Icon, Button, Separator, Right, Body, Left, Card, CardItem, Thumbnail, FooterTab, Footer } from 'native-base';
+import { Container, Header, Content, List, ListItem, Title, Text, Tab, Tabs, Segment, Badge, TabHeading, Icon, Button, Separator, Right, Body, Left, Card, CardItem, Thumbnail, FooterTab, Footer, Spinner } from 'native-base';
 import { Row, Column as Col} from 'react-native-responsive-grid'
 import faker from 'faker'
 import ImageSlider from 'react-native-image-slider';
@@ -46,7 +46,8 @@ export default class Home extends React.Component {
             ],
             shopType: [],
             shops: {},
-            top_shops: []
+            top_shops: [],
+            isReady: false
         }
         this.renderCategory = this.renderCategory.bind(this)
         this.renderShopType = this.renderShopType.bind(this)
@@ -69,54 +70,48 @@ export default class Home extends React.Component {
         })
     }
 
-    componentWillMount() {
-        fetch('http://192.168.1.38/food_delivery/admin/category')
-        .then((res) => res.json())
-        .then((data) =>
-            this.setState({
-                category: data.map((category) => ({
-                    key: category.id,
-                    name: category.name
-                }))
-            })
-        )
-
-        fetch('http://192.168.1.38/food_delivery/admin/shop')
-        .then((res) => res.json())
-        .then((data) => {
-            var tem_shops = data.reduce(function(a, b) {
-                return Object.assign(a, {
-                    [b.id]: JSON.parse(b.detail)
-                })
-            }, {})
-
-            this.setState({
-                shops: tem_shops
-            })
+    async componentWillMount() {
+        const category = await fetch('http://192.168.1.38/food_delivery/admin/category')
+        const category_result = await category.json()
+        this.setState({
+            category: category_result.map((category) => ({
+                key: category.id,
+                name: category.name
+            }))
         })
 
-        fetch('http://192.168.1.38/food_delivery/admin/top_shop')
-        .then((res) => res.json())
-        .then((data) => {
-            this.setState({
-                top_shops: data
+        const shop = await fetch('http://192.168.1.38/food_delivery/admin/shop')
+        const shop_result = await shop.json()
+        var tem_shops = shop_result.reduce(function(a, b) {
+            return Object.assign(a, {
+                [b.id]: JSON.parse(b.detail)
             })
+        }, {})
+        this.setState({
+            shops: tem_shops
         })
 
-        fetch('http://192.168.1.38/food_delivery/admin/menu')
-        .then((res) => res.json())
-        .then((data) =>
-            this.setState({
-                shopType: data.map((menu) => ({
-                    key: menu.id,
-                    name: {
-                        th: menu.name_th,
-                        en: menu.name_en
-                    },
-                    uri: menu.url
-                }))
-            })
-        )
+        const top_shop = await fetch('http://192.168.1.38/food_delivery/admin/top_shop')
+        const top_shop_result = await top_shop.json()
+        this.setState({
+            top_shops: top_shop_result
+        })
+
+        const menu = await fetch('http://192.168.1.38/food_delivery/admin/menu')
+        const menu_result = await menu.json()
+        this.setState({
+            shopType: menu_result.map((menu) => ({
+                key: menu.id,
+                name: {
+                    th: menu.name_th,
+                    en: menu.name_en
+                },
+                uri: menu.url
+            }))
+        })
+        this.setState({
+            isReady: true
+        })
     }
 
     renderCategory() {
@@ -156,7 +151,7 @@ export default class Home extends React.Component {
 
     render() {
     return (
-        <Content>
+        this.state.isReady?<Content>
             <ImageSlider images={[
                 'https://i.ytimg.com/vi/Tvvdww2C-XE/maxresdefault.jpg',
                 'https://s3.amazonaws.com/media.citizine.tv/uploads/2015/11/11/shannonullman-warmupcafe_1280x853.jpg',
@@ -210,6 +205,10 @@ export default class Home extends React.Component {
                     this.renderShopType()
                 }
             </View>
+        </Content>
+        :
+        <Content>
+            <Spinner />
         </Content>
     )
   }
