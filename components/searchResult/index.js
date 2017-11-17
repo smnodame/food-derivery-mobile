@@ -1,45 +1,11 @@
 import React, { Component } from 'react';
 import { View,  StyleSheet, Image, TextInput, Platform, TouchableOpacity, KeyboardAvoidingView, FlatList} from 'react-native';
-import { Container, Header, Content, List, ListItem, Title, Text, Tab, Tabs, Segment, Badge, TabHeading, Icon, Button, Separator, Right, Body, Left, Card, CardItem, Thumbnail } from 'native-base';
+import { Container, Header, Content, List, ListItem, Title, Text, Tab, Tabs, Segment, Badge, TabHeading, Icon, Button, Separator, Right, Body, Left, Card, CardItem, Thumbnail, Spinner } from 'native-base';
 import { Row, Column as Col} from 'react-native-responsive-grid'
 import faker from 'faker'
 import Expo from "expo";
 import { NavigationActions } from 'react-navigation'
 
-// [
-//     {
-//         key : 1,
-//         title: 'เย็นตาโฟเครื่องทรง (ร้านต้นตำรับจากฮ่องกง)',
-//         description: 'บะหมี่ทำเองต้นตำรับฉบับฮ่องกง พร้อมน้ำซุปรสเด็ดส่งตรงถึงบ้าน',
-//         address: '161/6 Soi Thonglor 9 Sukhumvit Road Bangkok',
-//         shopType: 'บะหมี่, อาหารญี่ปุ่น',
-//         notation: 'ร้านอาหารเเนะนำ',
-//         uri: 'http://www.chingcancook.com/head_photo/02_20150122172551GLWY.jpg'
-//     },
-//     {
-//         key : 2,
-//         title: 'เย็นตาโฟเครื่องทรง (ร้านต้นตำรับจากฮ่องกง)',
-//         address: '161/6 Soi Thonglor 9 Sukhumvit Road Bangkok',
-//         shopType: 'บะหมี่, อาหารญี่ปุ่น',
-//         uri: 'http://www.chingcancook.com/head_photo/02_20150122172551GLWY.jpg'
-//     },
-//     {
-//         key : 3,
-//         title: 'เย็นตาโฟเครื่องทรง (ร้านต้นตำรับจากฮ่องกง)',
-//         address: '161/6 Soi Thonglor 9 Sukhumvit Road Bangkok',
-//         shopType: 'บะหมี่, อาหารญี่ปุ่น',
-//         notation: 'ร้านอาหารเเนะนำ',
-//         uri: 'http://www.chingcancook.com/head_photo/02_20150122172551GLWY.jpg'
-//     },
-//     {
-//         key : 4,
-//         title: 'เย็นตาโฟเครื่องทรง (ร้านต้นตำรับจากฮ่องกง)',
-//         description: 'บะหมี่ทำเองต้นตำรับฉบับฮ่องกง พร้อมน้ำซุปรสเด็ดส่งตรงถึงบ้าน',
-//         address: '161/6 Soi Thonglor 9 Sukhumvit Road Bangkok',
-//         shopType: 'บะหมี่, อาหารญี่ปุ่น',
-//         uri: 'http://www.chingcancook.com/head_photo/02_20150122172551GLWY.jpg'
-//     }
-// ]
 
 export default class SearchResult extends Component<{}> {
     constructor(props) {
@@ -168,6 +134,7 @@ export default class SearchResult extends Component<{}> {
                 </Content>
                 :
                 <Content>
+                    <Spinner />
                 </Content>
             }
         </Container>

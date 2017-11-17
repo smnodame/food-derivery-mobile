@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View,  StyleSheet, Image, TextInput, Platform, TouchableOpacity, KeyboardAvoidingView, FlatList} from 'react-native';
-import { Container, Header, Content, List, ListItem, Title, Text, Tab, Tabs, Item, Input, Segment, Badge, TabHeading, Icon, Button, Separator, Right, Body, Left, Card, CardItem, Thumbnail } from 'native-base';
+import { Container, Header, Content, List, ListItem, Title, Text, Tab, Tabs, Item, Input, Segment, Badge, TabHeading, Icon, Button, Separator, Right, Body, Left, Card, CardItem, Thumbnail, Spinner } from 'native-base';
 import { Row, Column as Col} from 'react-native-responsive-grid'
 import faker from 'faker'
 import Expo from "expo";
@@ -40,9 +40,11 @@ export default class Search extends Component<{}> {
             }))
         })
         this.setState({ isReady: true })
+        this.queryInput._root.focus();
     }
 
     searchShops(query) {
+        this.setState({ isReady: false })
         fetch('http://192.168.1.38/food_delivery/admin/search?search_by=word&query='+query)
         .then((res) => res.json())
         .then((data) => {
@@ -52,7 +54,8 @@ export default class Search extends Component<{}> {
             }))
             this.setState({
                 searchResult: shops,
-                isShowSearchBox: false
+                isShowSearchBox: false,
+                isReady: true
             })
         })
     }
@@ -180,6 +183,7 @@ export default class Search extends Component<{}> {
                 </Content>
                 :
                 <Content>
+                    <Spinner />
                 </Content>
             }
         </Container>
