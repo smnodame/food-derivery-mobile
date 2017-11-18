@@ -49,13 +49,37 @@ const randomUsers = (count = 10) => {
 //     />
 // </View>
 
+
+// <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginBottom: 15 }}>
+//     <View style={{padding: 2, backgroundColor: '#ebb72d', borderRadius: 5 }}><Text style={{ color: '#FFF' }}> ร้านอาหารเเนะนำ </Text></View>
+// </View>
+
+// <Text style={styles.hour}>
+//     <Text style={styles.hourStatus}>Closed Now  </Text>
+//     <Text style={styles.hourTime}>
+//         8 AM to 10:30 PM (Mon)
+//     </Text>
+// </Text>
+
+// <Text style={styles.fontRobo}>Everyday 11:00 - 20:00</Text>
+
 export default class Detail extends Component<{}> {
-    state = {
-      refreshing: false,
-      data: randomUsers(10),
-      tab: 'menu',
-      isReady: false
-    };
+    constructor(props) {
+        super(props)
+        this.state = {
+            refreshing: false,
+            data: randomUsers(10),
+            tab: 'menu',
+            shop: {
+                detail: {
+                    title: ''
+                }
+            },
+            isReady: false
+        }
+        this.renderMenuTypeTopShop = this.renderMenuTypeTopShop.bind(this)
+        this.renderProductList = this.renderProductList.bind(this)
+    }
 
     onEndReached = () => {
       const data = [
@@ -77,13 +101,61 @@ export default class Detail extends Component<{}> {
     async componentWillMount() {
         const shop = await fetch('http://192.168.1.38/food_delivery/admin/shop/'+ this.props.navigation.state.params.shop_id)
         const shop_result = await shop.json()
-        // this.setState({
-        //     category: category_result.map((category) => ({
-        //         key: category.id,
-        //         name: category.name
-        //     }))
-        // })
-        console.log(shop_result)
+        const shop_detail = JSON.parse(shop_result.detail)
+        this.setState({
+            shop: {
+                id: shop_result.id,
+                detail: shop_detail
+            }
+        })
+
+        let cover_image = []
+        if(!!shop_detail.header_image[0]) {
+            cover_image.push(shop_detail.header_image[0])
+        }
+        if(!!shop_detail.header_image[1]) {
+            cover_image.push(shop_detail.header_image[1])
+        }
+        if(!!shop_detail.header_image[0]) {
+            cover_image.push(shop_detail.header_image[2])
+        }
+        this.setState({
+            cover_image: cover_image
+        })
+
+        shop_detail.product_list.reduce((a, b) => {
+            return
+        }, {})
+
+        const product_list = shop_detail.food_type.reduce((a, b) => {
+            return Object.assign(a, {
+                [b.id]: {
+                    name: b.name,
+                    product: []
+                }
+            })
+        }, {})
+
+        shop_detail.product_list.forEach((product) => {
+            product_list[product.category].product.push(product)
+        })
+
+        this.setState({
+            product_list: product_list
+        })
+
+        const response = await fetch('http://192.168.1.38/food_delivery/admin/menu')
+        const data = await response.json()
+        this.setState({
+            shopType: data.map((menu) => ({
+                key: menu.id,
+                name: {
+                    th: menu.name_th,
+                    en: menu.name_en
+                },
+                uri: menu.url
+            }))
+        })
 
         await Expo.Font.loadAsync({
             Roboto: require("native-base/Fonts/Roboto.ttf"),
@@ -91,6 +163,46 @@ export default class Detail extends Component<{}> {
             Ionicons: require("@expo/vector-icons/fonts/Ionicons.ttf")
         })
         this.setState({ isReady: true })
+    }
+
+    renderMenuTypeTopShop(menu_type) {
+        return menu_type.reduce((a, b) => {
+            const filter = (item) => {
+                return item.key == b
+            }
+            return a + this.state.shopType.find(filter).name.th + " / "
+        }, "")
+    }
+
+    renderProductList() {
+        return this.state.shop.detail.food_type.map((category) => {
+            if(this.state.product_list[category.id].product.length >=1 ) {
+                return (
+                    <View>
+                    <Separator bordered>
+                        <Text>{ category.name }</Text>
+                    </Separator>
+                    {
+                        this.state.product_list[category.id].product.map((product) => {
+                            return (
+                                <ListItem>
+                                    <Body>
+                                        <Text style={{ marginBottom: 5 }}>{ product.name }</Text>
+                                        <Text style={{ color: '#44cb5d'}}>{ product.price }฿</Text>
+                                    </Body>
+                                    <Image style={{ width: 80, height: 80 }} source={{ uri: product.url_image }} />
+                                </ListItem>
+                            )
+                        })
+                    }
+                    </View>
+                )
+            } else {
+                return (
+                    <View />
+                )
+            }
+        })
     }
 
     render() {
@@ -111,7 +223,7 @@ export default class Detail extends Component<{}> {
                     </Button>
                 </Left>
                 <Body>
-                    <Title>ร้านอาหารไทยเจ้าน้อย</Title>
+                    <Title>{ this.state.shop.detail.title }</Title>
                 </Body>
                 <Right>
                     <Button transparent  onPress={() => this.props.navigation.navigate('Basket') } >
@@ -128,22 +240,12 @@ export default class Detail extends Component<{}> {
                  this.state.isReady?
                  <Content style={{ backgroundColor: '#f4f4f4' }}>
                      <View style={{ backgroundColor: '#FFF' }}>
-                         <ImageSlider images={[
-                             'https://img01.siam2nite.com/Y5iKuprgOI7ychRL3Pty5Le3feU=/smart/locations/1081/cover_large_p19op819ru1v92sof1k0l138rf6p3.jpg',
-                             'https://s3.amazonaws.com/media.citizine.tv/uploads/2015/11/11/shannonullman-warmupcafe_1280x853.jpg',
-                             'https://img01.siam2nite.com/XxoZa5z3cN6JYtN_SCYlcZkhly8=/smart/locations/1081/cover_large_p19op819ru38p18pe1dat1jq71smk8.jpg'
-                         ]}/>
-                         <Text style={styles.title}>ร้านอาหารไทยเจ้าน้อย</Text>
-                         <Text style={styles.subtitle}>Bars, Barbeque / Grill , Quick Meal</Text>
-                         <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginBottom: 15 }}>
-                             <View style={{padding: 2, backgroundColor: '#ebb72d', borderRadius: 5 }}><Text style={{ color: '#FFF' }}> ร้านอาหารเเนะนำ </Text></View>
-                         </View>
-                         <Text style={styles.hour}>
-                             <Text style={styles.hourStatus}>Closed Now  </Text>
-                             <Text style={styles.hourTime}>
-                                 8 AM to 10:30 PM (Mon)
-                             </Text>
-                         </Text>
+                         <ImageSlider images={this.state.cover_image}/>
+                         <Text style={styles.title}>{ this.state.shop.detail.title }</Text>
+                         <Text style={styles.subtitle}>{ this.renderMenuTypeTopShop(this.state.shop.detail.menu_type) }</Text>
+                         {
+                             this.state.shop.detail.detail!=""&& <Text style={styles.description}>{ this.state.shop.detail.detail }</Text>
+                         }
                      </View>
                      <View style={{ backgroundColor: '#FFF', marginTop: 20, borderColor: '#d3d3d3', borderBottomWidth: 0.5 }}>
                          <View style={styles.tabs}>
@@ -161,19 +263,18 @@ export default class Detail extends Component<{}> {
                              <List>
                                  <ListItem>
                                      <Body>
-                                         <Text style={styles.fontRobo}>Everyday 11:00 - 20:00</Text>
-                                         <Text style={styles.fontRobo} note>โทร 0828469953</Text>
+                                         <Text style={styles.fontRobo} note>โทร { this.state.shop.detail.phone || '-' }</Text>
                                      </Body>
                                  </ListItem>
                                  <ListItem >
                                      <Body>
-                                         <Text style={styles.fontRobo}>141/1 ชั้น 1 Belle Grand export default class ListIconExample extends Component</Text>
+                                         <Text style={styles.fontRobo}>{ this.state.shop.detail.address }</Text>
                                      </Body>
                                      <Right>
                                      <MapView style={ styles.map }
                                          initialRegion={{
-                                             latitude: 37.78825,
-                                             longitude: -122.4324,
+                                             latitude: parseFloat(this.state.shop.detail.lat_lng.split(',')[0]),
+                                             longitude: parseFloat(this.state.shop.detail.lat_lng.split(',')[1]),
                                              latitudeDelta: 0.0922,
                                              longitudeDelta: 0.0421,
                                          }}
@@ -192,69 +293,9 @@ export default class Detail extends Component<{}> {
                          </View>
                          :
                          <View>
-
-                             <Separator bordered>
-                                 <Text>Recommended</Text>
-                             </Separator>
-                             <ListItem>
-                                 <Body>
-                                     <Text style={{ marginBottom: 5 }}>ซี่โครงบาร์บีคิวหมู</Text>
-                                     <Text style={{ color: '#44cb5d'}}>299฿</Text>
-                                 </Body>
-                                 <Image style={{ width: 80, height: 80 }} source={{ uri: 'https://xn--y3ciq3ab3kc.com/wp-content/uploads/2016/09/%E0%B8%AA%E0%B9%80%E0%B8%95%E0%B9%87%E0%B8%81%E0%B8%AB%E0%B8%A1%E0%B8%B9%E0%B8%83.jpg' }} />
-                             </ListItem>
-                             <ListItem>
-                                 <Body>
-                                     <Text style={{ marginBottom: 5 }}>ซี่โครงบาร์บีคิวหม</Text>
-                                     <Text style={{ color: '#44cb5d'}}>299฿</Text>
-                                 </Body>
-                                 <Image style={{ width: 80, height: 80 }} source={{ uri: 'http://www.kruamoomoo.com/wp-content/uploads/2012/11/pork-t-bone-steak-and-salad-039.jpg' }} />
-                             </ListItem>
-                             <ListItem>
-                                 <Body>
-                                     <Text style={{ marginBottom: 5 }}>ซี่โครงบาร์บีคิวหมู size 1 เมตร</Text>
-                                     <Text style={{ color: '#44cb5d'}}>299฿</Text>
-                                 </Body>
-                                 <Image style={{ width: 80, height: 80 }} source={{ uri: 'https://s.isanook.com/mn/0/rp/r/w700h420/ya0xa0m1w0/aHR0cHM6Ly9zLmlzYW5vb2suY29tL21uLzAvdWQvMzIvMTYzOTEyL3N0ZWFrc21hbGwuanBn.jpg' }} />
-                             </ListItem>
-                             <ListItem>
-                                 <Body>
-                                     <Text style={{ marginBottom: 5 }}>ซี่โครงบาร์บีคิวหมู size 1 เมตร</Text>
-                                     <Text style={{ color: '#44cb5d'}}>299฿</Text>
-                                 </Body>
-                                 <Image style={{ width: 80, height: 80 }} source={{ uri: 'https://xn--y3ciq3ab3kc.com/wp-content/uploads/2016/09/%E0%B8%AA%E0%B9%80%E0%B8%95%E0%B9%87%E0%B8%81%E0%B8%AB%E0%B8%A1%E0%B8%B9%E0%B8%83.jpg' }} />
-                             </ListItem>
-                             <Separator bordered>
-                                 <Text>จานหลัก</Text>
-                             </Separator>
-                             <ListItem>
-                                 <Body>
-                                     <Text style={{ marginBottom: 5 }}>ซี่โครงบาร์บีคิวหมู</Text>
-                                     <Text style={{ color: '#44cb5d'}}>299฿</Text>
-                                 </Body>
-                                 <Image style={{ width: 80, height: 80 }} source={{ uri: 'https://xn--y3ciq3ab3kc.com/wp-content/uploads/2016/09/%E0%B8%AA%E0%B9%80%E0%B8%95%E0%B9%87%E0%B8%81%E0%B8%AB%E0%B8%A1%E0%B8%B9%E0%B8%83.jpg' }} />
-                             </ListItem>
-                             <ListItem>
-                                 <Body>
-                                     <Text style={{ marginBottom: 5 }}>ซี่โครงบาร์บีคิวหม</Text>
-                                     <Text style={{ color: '#44cb5d'}}>299฿</Text>
-                                 </Body>
-                                 <Image style={{ width: 80, height: 80 }} source={{ uri: 'http://www.kruamoomoo.com/wp-content/uploads/2012/11/pork-t-bone-steak-and-salad-039.jpg' }} />
-                             </ListItem>
-                             <ListItem>
-                                 <Body>
-                                     <Text style={{ marginBottom: 5 }}>ซี่โครงบาร์บีคิวหมู size 1 เมตร</Text>
-                                     <Text style={{ color: '#44cb5d'}}>299฿</Text>
-                                 </Body>
-                                 <Image style={{ width: 80, height: 80 }} source={{ uri: 'https://s.isanook.com/mn/0/rp/r/w700h420/ya0xa0m1w0/aHR0cHM6Ly9zLmlzYW5vb2suY29tL21uLzAvdWQvMzIvMTYzOTEyL3N0ZWFrc21hbGwuanBn.jpg' }} />
-                             </ListItem>
-                             <ListItem>
-                                 <Body>
-                                     <Text style={{ marginBottom: 5 }}>ซี่โครงบาร์บีคิวหมู size 1 เมตร</Text>
-                                     <Text style={{ color: '#44cb5d'}}>299฿</Text>
-                                 </Body>
-                                 <Image style={{ width: 80, height: 80 }} source={{ uri: 'https://xn--y3ciq3ab3kc.com/wp-content/uploads/2016/09/%E0%B8%AA%E0%B9%80%E0%B8%95%E0%B9%87%E0%B8%81%E0%B8%AB%E0%B8%A1%E0%B8%B9%E0%B8%83.jpg' }} />
-                             </ListItem>
+                            {
+                                this.renderProductList()
+                            }
                          </View>
                      }
                  </View>
@@ -347,5 +388,14 @@ const styles = StyleSheet.create({
         bottom: 0,
         right: 0,
         left: 0
+    },
+    description: {
+        fontFamily: "Roboto",
+        color: '#FF7043',
+        paddingBottom: 15,
+        textAlign: 'center',
+        fontSize: 12,
+        paddingLeft: 10,
+        paddingRight: 10
     }
 })
