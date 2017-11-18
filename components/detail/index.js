@@ -286,7 +286,7 @@ export default class Detail extends Component<{}> {
                                          <Text style={styles.fontRobo}>Estimated cook time</Text>
                                      </Body>
                                      <Right>
-                                         <Text style={styles.fontRobo}>6 นาที</Text>
+                                         <Text style={styles.fontRobo}>{ this.state.shop.detail.estimate_cook_time || '0' } นาที</Text>
                                      </Right>
                                  </ListItem>
                              </List>
