@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View,  StyleSheet, Image, TextInput, Platform, TouchableOpacity, KeyboardAvoidingView, FlatList} from 'react-native';
-import { Container, Header, Content, List, ListItem, Text, Tab, Tabs, TabHeading, Icon, Button, Separator, Right, Body, Left, Title } from 'native-base';
+import { Container, Header, Content, List, ListItem, Text, Tab, Tabs, TabHeading, Icon, Button, Separator, Right, Body, Left, Title, Thumbnail, Spinner } from 'native-base';
 import { Row, Column as Col} from 'react-native-responsive-grid'
 import faker from 'faker';
 import Expo from "expo";
@@ -36,6 +36,19 @@ const randomUsers = (count = 10) => {
   return arr
 }
 
+// <View style={{ marginTop: 15 }}>
+//     <FlatList
+//         horizontal={true}
+//         data={this.state.data}
+//         renderItem={({item}) => (
+//             <View style={{ padding: 15, width: 120 }}>
+//                 <Image style={{ height: 100, width: 100, borderRadius: 5, marginBottom: 10 }} source={{ uri: item.image}}></Image>
+//                 <Text numberOfLines={2}>{item.name}</Text>
+//             </View>
+//         )}
+//     />
+// </View>
+
 export default class Detail extends Component<{}> {
     state = {
       refreshing: false,
@@ -62,6 +75,16 @@ export default class Detail extends Component<{}> {
     }
 
     async componentWillMount() {
+        const shop = await fetch('http://192.168.1.38/food_delivery/admin/shop/'+ this.props.navigation.state.params.shop_id)
+        const shop_result = await shop.json()
+        // this.setState({
+        //     category: category_result.map((category) => ({
+        //         key: category.id,
+        //         name: category.name
+        //     }))
+        // })
+        console.log(shop_result)
+
         await Expo.Font.loadAsync({
             Roboto: require("native-base/Fonts/Roboto.ttf"),
             Roboto_medium: require("native-base/Fonts/Roboto_medium.ttf"),
@@ -169,66 +192,76 @@ export default class Detail extends Component<{}> {
                          </View>
                          :
                          <View>
-                         <View style={{ marginTop: 15 }}>
-                             <FlatList
-                                 horizontal={true}
-                                 data={this.state.data}
-                                 renderItem={({item}) => (
-                                     <View style={{ padding: 15, width: 120 }}>
-                                         <Image style={{ height: 100, width: 100, borderRadius: 5, marginBottom: 10 }} source={{ uri: item.image}}></Image>
-                                         <Text numberOfLines={2}>{item.name}</Text>
-                                     </View>
-                                 )}
-                             />
-                         </View>
-                         <Separator bordered>
-                             <Text>Recommended</Text>
-                         </Separator>
-                         <ListItem >
-                             <View style={styles.itemProduct}>
-                                 <Text>บาบีคิวเนื้อ</Text>
-                                 <Text style={{ color: '#44cb5d'}}>209฿</Text>
-                             </View>
-                         </ListItem>
-                         <ListItem>
-                             <View style={styles.itemProduct}>
-                                 <Text>เห็ดห่มผ้า</Text>
-                                 <Text style={{ color: '#44cb5d'}}>199฿</Text>
-                             </View>
-                         </ListItem>
-                         <ListItem last>
-                             <View style={styles.itemProduct}>
-                                 <Text>ซี่โครงหมูบาบีคิว size 1 เมตร</Text>
-                                 <Text style={{ color: '#44cb5d'}}>569฿</Text>
-                             </View>
-                         </ListItem>
-                         <Separator bordered>
-                             <Text>จานหลัก</Text>
-                         </Separator>
-                         <ListItem>
-                             <View style={styles.itemProduct}>
-                                 <Text>ซี่โครงบาร์บีคิวหมู size 0.25 เมตร</Text>
-                                 <Text style={{ color: '#44cb5d'}}>129฿</Text>
-                             </View>
-                         </ListItem>
-                         <ListItem>
-                             <View style={styles.itemProduct}>
-                                 <Text>ซี่โครงบาร์บีคิวหมู size 0.5 เมตร</Text>
-                                 <Text style={{ color: '#44cb5d'}}>220฿</Text>
-                             </View>
-                         </ListItem>
-                         <ListItem>
-                             <View style={styles.itemProduct}>
-                                 <Text>ซี่โครงบาร์บีคิวหมู size 1 เมตร</Text>
-                                 <Text style={{ color: '#44cb5d'}}>299฿</Text>
-                             </View>
-                         </ListItem>
+
+                             <Separator bordered>
+                                 <Text>Recommended</Text>
+                             </Separator>
+                             <ListItem>
+                                 <Body>
+                                     <Text style={{ marginBottom: 5 }}>ซี่โครงบาร์บีคิวหมู</Text>
+                                     <Text style={{ color: '#44cb5d'}}>299฿</Text>
+                                 </Body>
+                                 <Image style={{ width: 80, height: 80 }} source={{ uri: 'https://xn--y3ciq3ab3kc.com/wp-content/uploads/2016/09/%E0%B8%AA%E0%B9%80%E0%B8%95%E0%B9%87%E0%B8%81%E0%B8%AB%E0%B8%A1%E0%B8%B9%E0%B8%83.jpg' }} />
+                             </ListItem>
+                             <ListItem>
+                                 <Body>
+                                     <Text style={{ marginBottom: 5 }}>ซี่โครงบาร์บีคิวหม</Text>
+                                     <Text style={{ color: '#44cb5d'}}>299฿</Text>
+                                 </Body>
+                                 <Image style={{ width: 80, height: 80 }} source={{ uri: 'http://www.kruamoomoo.com/wp-content/uploads/2012/11/pork-t-bone-steak-and-salad-039.jpg' }} />
+                             </ListItem>
+                             <ListItem>
+                                 <Body>
+                                     <Text style={{ marginBottom: 5 }}>ซี่โครงบาร์บีคิวหมู size 1 เมตร</Text>
+                                     <Text style={{ color: '#44cb5d'}}>299฿</Text>
+                                 </Body>
+                                 <Image style={{ width: 80, height: 80 }} source={{ uri: 'https://s.isanook.com/mn/0/rp/r/w700h420/ya0xa0m1w0/aHR0cHM6Ly9zLmlzYW5vb2suY29tL21uLzAvdWQvMzIvMTYzOTEyL3N0ZWFrc21hbGwuanBn.jpg' }} />
+                             </ListItem>
+                             <ListItem>
+                                 <Body>
+                                     <Text style={{ marginBottom: 5 }}>ซี่โครงบาร์บีคิวหมู size 1 เมตร</Text>
+                                     <Text style={{ color: '#44cb5d'}}>299฿</Text>
+                                 </Body>
+                                 <Image style={{ width: 80, height: 80 }} source={{ uri: 'https://xn--y3ciq3ab3kc.com/wp-content/uploads/2016/09/%E0%B8%AA%E0%B9%80%E0%B8%95%E0%B9%87%E0%B8%81%E0%B8%AB%E0%B8%A1%E0%B8%B9%E0%B8%83.jpg' }} />
+                             </ListItem>
+                             <Separator bordered>
+                                 <Text>จานหลัก</Text>
+                             </Separator>
+                             <ListItem>
+                                 <Body>
+                                     <Text style={{ marginBottom: 5 }}>ซี่โครงบาร์บีคิวหมู</Text>
+                                     <Text style={{ color: '#44cb5d'}}>299฿</Text>
+                                 </Body>
+                                 <Image style={{ width: 80, height: 80 }} source={{ uri: 'https://xn--y3ciq3ab3kc.com/wp-content/uploads/2016/09/%E0%B8%AA%E0%B9%80%E0%B8%95%E0%B9%87%E0%B8%81%E0%B8%AB%E0%B8%A1%E0%B8%B9%E0%B8%83.jpg' }} />
+                             </ListItem>
+                             <ListItem>
+                                 <Body>
+                                     <Text style={{ marginBottom: 5 }}>ซี่โครงบาร์บีคิวหม</Text>
+                                     <Text style={{ color: '#44cb5d'}}>299฿</Text>
+                                 </Body>
+                                 <Image style={{ width: 80, height: 80 }} source={{ uri: 'http://www.kruamoomoo.com/wp-content/uploads/2012/11/pork-t-bone-steak-and-salad-039.jpg' }} />
+                             </ListItem>
+                             <ListItem>
+                                 <Body>
+                                     <Text style={{ marginBottom: 5 }}>ซี่โครงบาร์บีคิวหมู size 1 เมตร</Text>
+                                     <Text style={{ color: '#44cb5d'}}>299฿</Text>
+                                 </Body>
+                                 <Image style={{ width: 80, height: 80 }} source={{ uri: 'https://s.isanook.com/mn/0/rp/r/w700h420/ya0xa0m1w0/aHR0cHM6Ly9zLmlzYW5vb2suY29tL21uLzAvdWQvMzIvMTYzOTEyL3N0ZWFrc21hbGwuanBn.jpg' }} />
+                             </ListItem>
+                             <ListItem>
+                                 <Body>
+                                     <Text style={{ marginBottom: 5 }}>ซี่โครงบาร์บีคิวหมู size 1 เมตร</Text>
+                                     <Text style={{ color: '#44cb5d'}}>299฿</Text>
+                                 </Body>
+                                 <Image style={{ width: 80, height: 80 }} source={{ uri: 'https://xn--y3ciq3ab3kc.com/wp-content/uploads/2016/09/%E0%B8%AA%E0%B9%80%E0%B8%95%E0%B9%87%E0%B8%81%E0%B8%AB%E0%B8%A1%E0%B8%B9%E0%B8%83.jpg' }} />
+                             </ListItem>
                          </View>
                      }
                  </View>
                  </Content>
                  :
                  <Content>
+                    <Spinner />
                  </Content>
             }
 

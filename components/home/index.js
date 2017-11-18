@@ -172,7 +172,9 @@ export default class Home extends React.Component {
                     horizontal={true}
                     data={this.state.top_shops}
                     renderItem={({item}) => (
-                        <TouchableOpacity onPress={() => this.props.screenProps.rootNavigation.navigate('Detail')} key={item.id}>
+                        <TouchableOpacity onPress={() => this.props.screenProps.rootNavigation.navigate('Detail', {
+                            shop_id: item.id
+                        })} key={item.id}>
                             <View style={{ backgroundColor: 'white', borderRadius: 5, width: 180, height: 220, borderColor: '#d3d3d3', borderWidth: 1, margin: 10 }}>
                                 <Image style={{ width: '100%', height: 120 }} source={{ uri: this.state.shops[item.id].url_img_profile }} />
                                 <View style={{ padding: 15 }}>
